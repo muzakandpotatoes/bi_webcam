@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bi_webcam</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23ff4d4f%22/></svg>" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <span class="brand">bi_webcam</span>
+      <span id="toast" class="toast" role="status"></span>
+      <span class="spacer"></span>
+      <span id="outInfo" class="muted mono"></span>
+      <span id="recIndicator" class="rec-indicator" hidden><span class="dot"></span><span id="recTime" class="mono">00:00</span></span>
+      <button id="folderBtn" class="ghost" title="Where recordings are saved">📁 <span id="folderName">Choose folder…</span></button>
+    </header>
+
+    <main id="stage" class="stage">
+      <template id="paneTpl">
+        <section class="pane">
+          <div class="pane-head">
+            <span class="tag"></span>
+            <select class="cam" title="Camera"></select>
+            <select class="res lockable" title="Requested resolution">
+              <option value="720">720p</option>
+              <option value="1080">1080p</option>
+              <option value="2160">4K</option>
+            </select>
+            <select class="fps lockable" title="Requested frame rate">
+              <option value="30">30</option>
+              <option value="60">60</option>
+            </select>
+            <button class="rot icon lockable" title="Rotate 90° (applies to recording)">⟳</button>
+            <button class="mir icon" title="Mirror preview (not recorded)">⇋</button>
+          </div>
+          <div class="pane-video">
+            <video muted playsinline autoplay></video>
+            <div class="placeholder"></div>
+            <div class="frozen-badge">FROZEN</div>
+          </div>
+          <div class="pane-foot mono"></div>
+        </section>
+      </template>
+      <section class="pane output-pane" id="outputPane" hidden>
+        <div class="pane-head"><span class="tag">OUT</span><span class="muted">Combined output — this is what gets recorded</span></div>
+        <div class="pane-video">
+          <video muted playsinline autoplay></video>
+          <div class="frozen-badge">FROZEN</div>
+        </div>
+        <div class="pane-foot mono" id="outputFoot"></div>
+      </section>
+    </main>
+
+    <footer class="controls">
+      <div class="row">
+        <label class="row-label">Video sync</label>
+        <button class="nudge lockable" data-target="video" data-step="-10" title="Shift+←">−10ms</button>
+        <button class="nudge lockable" data-target="video" data-step="-frame" title="←">−1f</button>
+        <input id="videoRange" class="lockable" type="range" min="-1000" max="1000" step="1" />
+        <button class="nudge lockable" data-target="video" data-step="frame" title="→">+1f</button>
+        <button class="nudge lockable" data-target="video" data-step="10" title="Shift+→">+10ms</button>
+        <input id="videoNum" class="num lockable" type="number" step="1" />
+        <span id="videoDesc" class="desc"></span>
+      </div>
+      <div class="row">
+        <label class="row-label">Audio</label>
+        <select id="micSel" class="lockable" title="Microphone"></select>
+        <span class="meter"><span id="meterBar"></span></span>
+        <button class="nudge lockable" data-target="audio" data-step="-10">−10ms</button>
+        <input id="audioRange" class="lockable" type="range" min="-500" max="1000" step="1" />
+        <button class="nudge lockable" data-target="audio" data-step="10">+10ms</button>
+        <input id="audioNum" class="num lockable" type="number" step="1" />
+        <span id="audioDesc" class="desc"></span>
+      </div>
+      <div class="row">
+        <label class="row-label">Output</label>
+        <div class="seg" role="group" aria-label="Arrangement">
+          <button id="arrSide" class="lockable" title="L — side by side (shared height)">◫ Side by side</button>
+          <button id="arrStacked" class="lockable" title="L — stacked (shared width)">⊟ Stacked</button>
+        </div>
+        <select id="outSize" class="lockable" title="Output quality: each camera is scaled to match a 16:9 feed at this resolution (shared height when side by side, shared width when stacked)">
+          <option value="720">720p</option>
+          <option value="1080">1080p</option>
+          <option value="1440">1440p</option>
+        </select>
+        <select id="outFps" class="lockable" title="Combined output frame rate">
+          <option value="30">30 fps</option>
+          <option value="60">60 fps</option>
+        </select>
+        <label class="check"><input id="saveIndividual" class="lockable" type="checkbox" /> also save each camera separately</label>
+        <span class="spacer"></span>
+        <div class="seg" role="group" aria-label="View">
+          <button id="viewCams" title="V">Cameras</button>
+          <button id="viewOut" title="V">Output</button>
+        </div>
+        <button id="freezeBtn" title="F — freeze the preview to compare frames (recording continues)">❄ Freeze</button>
+        <button id="recBtn" class="rec-btn" title="Space">● Record</button>
+      </div>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
